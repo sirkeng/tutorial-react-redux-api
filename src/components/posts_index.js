@@ -3,10 +3,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { fetchPosts } from '../actions';
-//console.log(fetchPost);
+// console.log(fetchPosts);
 
 class PostsIndex extends Component {
 	componentDidMount() {
+		// console.log(this.props.fetchPosts());
 		this.props.fetchPosts();
 	}
 
@@ -58,7 +59,7 @@ class PostsIndex extends Component {
 	}
 
 	render() {
-		//console.log(this.props.posts);
+		// console.log(this.props.postse);
 		return (
 			<div>
 				<div className="text-xs-right">
@@ -77,7 +78,7 @@ class PostsIndex extends Component {
 
 
 function mapStateToProps(state) {
-	//console.log(state);
+	// console.log(state);
 	return { posts: state.posts };
 }
 
