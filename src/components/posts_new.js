@@ -1,29 +1,43 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { createPost } from '../actions';
 
 class PostsNew extends Component {
 	renderField(field) {
-		console.log(field);
+		// console.log(field.meta);
+		const { meta: { touched, error } } = field;
+		const className = `form-group ${touched && error ? 'has-danger' : ''}`
+
 		return (
-			<div className="form-group">
+			<div className={className}>
 				<label>{field.label}</label>
 				<input
 					className="form-control"
 					type="text"
-					{...field.input}
+					{...field.input} //like so = onChange={field.input.onChange}, onFocus={field.input.onFocus}, onBlur={field.input.onBlur}, name="somename" all in object in input
 				/>
-				{field.meta.errors}
+				<div className="text-help">
+					{touched ? error : ''}
+				</div>
 			</div>
 		);
 	}
 
-	renderTagsField(field) {
-
+	onSubmit(values){
+		// this === component
+		// console.log('onSubmit: ', values);
+		this.props.createPost(values, () => {
+			this.props.history.push('/'); //call back
+		});
 	}
 
 	render() {
+		const { handleSubmit } = this.props;
+		// console.log(this.props); ===> propertie 
 		return (
-			<form>
+			<form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
 			 <Field
 			 	label="Title For Post"
 			 	name="title"
@@ -41,6 +55,7 @@ class PostsNew extends Component {
 			 />
 
 			 <button type="submit" className="btn btn-primary">Submit</button>
+			 <Link to="/" className="btn btn-danger">Cancel</Link>
 			</form>
 		);
 	}
@@ -49,7 +64,7 @@ class PostsNew extends Component {
 
 function validate(values) {
 	// console.log(values) -> { title: 'fdsfd', categories: 'fdsfdsf', content: 'fsfdsf'}
-
+	// console.log('validate: ', values);
 	const errors = {};
 
 	//Validate the inputs from 'values'
@@ -68,6 +83,7 @@ function validate(values) {
 
 	// If errors is empty, the form is fine to submit
 	// If errors has *any* properties, redux form assumes form is invalid
+	// console.log('errors: ', errors);
 	return errors;
 
 }
@@ -76,4 +92,12 @@ function validate(values) {
 export default reduxForm({
 	validate,
 	form: 'PostsNewForm'
-})(PostsNew);
+})(
+	connect(null, { createPost })(PostsNew)
+);
+
+
+
+
+
+
